@@ -4,6 +4,8 @@ import { loadDepartures, type Origin } from './lib/departures'
 import { searchStationsByName, type Departure, type TransportType } from './lib/transportApi'
 import { formatDistance, walkMinutes } from './lib/geo'
 import { formatClock, formatCountdown, minutesUntil } from './lib/time'
+import { getStoredConsent, loadAnalytics } from './analytics'
+import CookieConsent from './CookieConsent'
 
 type LocationStatus = 'idle' | 'requesting' | 'granted' | 'denied' | 'unavailable'
 type DataStatus = 'idle' | 'loading' | 'ready' | 'error'
@@ -172,6 +174,10 @@ export default function App() {
   const [toasts, setToasts] = useState<Toast[]>([])
   const [lastUpdated, setLastUpdated] = useState<number | null>(null)
   const now = useNowTick(15_000)
+
+  useEffect(() => {
+    if (getStoredConsent() === 'granted') loadAnalytics()
+  }, [])
   const toastId = useRef(0)
 
   const pushToast = useCallback((message: string) => {
@@ -446,6 +452,7 @@ export default function App() {
         <a href="https://vibe-portfolio-one.vercel.app/" target="_blank" rel="noreferrer">Created by Bruno Rendeiro</a>
         <span className="powered-badge">⚡ Powered by AI</span>
       </footer>
+      <CookieConsent />
     </div>
   )
 }
