@@ -341,7 +341,7 @@ export default function App() {
               </div>
               <div className="control-group">
                 <span className="control-label">Transporte</span>
-                <div className="button-group wrap">
+                <div className="button-group">
                   {TYPE_OPTIONS.map(opt => (
                     <button
                       key={opt.key}
@@ -355,7 +355,7 @@ export default function App() {
               </div>
               <div className="control-group">
                 <span className="control-label">Agrupar por</span>
-                <div className="button-group wrap">
+                <div className="button-group">
                   {GROUP_OPTIONS.map(opt => (
                     <button key={opt.key} className={groupBy === opt.key ? 'active' : ''} onClick={() => setGroupBy(opt.key)}>
                       {opt.label}
