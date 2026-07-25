@@ -53,6 +53,12 @@ export async function searchStationsByName(query: string): Promise<StationHit[]>
 
 export type TransportType = 'tram' | 'bus' | 'train' | 'boat' | 'other'
 
+export type RawPassListEntry = {
+  station: { name: string | null }
+  arrival: string | null
+  departure: string | null
+}
+
 export type RawStopover = {
   name: string | null
   category: string | null
@@ -65,6 +71,12 @@ export type RawStopover = {
     platform: string | null
     prognosis?: { platform: string | null } | null
   }
+  passList?: RawPassListEntry[] | null
+}
+
+export type RouteStop = {
+  name: string
+  time: string | null
 }
 
 export type Departure = {
@@ -83,6 +95,7 @@ export type Departure = {
     longitude: number
     distanceKm: number
   }
+  routeStops: RouteStop[]
 }
 
 const CATEGORY_MAP: Record<string, TransportType> = {
@@ -136,5 +149,8 @@ export async function fetchStationboard(station: StationHit, limit: number): Pro
         longitude: station.longitude,
         distanceKm: station.distanceKm ?? 0,
       },
+      routeStops: (entry.passList ?? [])
+        .filter((p): p is RawPassListEntry & { station: { name: string } } => Boolean(p.station?.name))
+        .map(p => ({ name: p.station.name, time: p.departure ?? p.arrival })),
     }))
 }

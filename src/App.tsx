@@ -118,7 +118,7 @@ function SkeletonCard({ delay }: { delay: number }) {
   )
 }
 
-function DepartureCard({ dep, now }: { dep: Departure; now: number }) {
+function DepartureCard({ dep, now, expanded, onToggleStops }: { dep: Departure; now: number; expanded: boolean; onToggleStops: () => void }) {
   const mins = minutesUntil(dep.departureTimestamp, now)
   const urgent = mins <= 5
   return (
@@ -154,7 +154,31 @@ function DepartureCard({ dep, now }: { dep: Departure; now: number }) {
           </>
         )}
       </div>
-      <div className={`countdown${urgent ? ' urgent' : ''}`}>{formatCountdown(dep.departureTimestamp, now)}</div>
+      <div className="departure-bottom">
+        <div className={`countdown${urgent ? ' urgent' : ''}`}>{formatCountdown(dep.departureTimestamp, now)}</div>
+        {dep.routeStops.length > 0 && (
+          <button type="button" className="stops-toggle" onClick={onToggleStops}>
+            {expanded ? 'Esconder paragens' : `Ver todas as paragens (${dep.routeStops.length})`}
+          </button>
+        )}
+      </div>
+      <AnimatePresence>
+        {expanded && dep.routeStops.length > 0 && (
+          <motion.ul
+            className="stops-list"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+          >
+            {dep.routeStops.map((stop, i) => (
+              <li key={`${stop.name}-${i}`}>
+                <span className="stops-list-time">{stop.time ? stop.time.slice(11, 16) : '—'}</span>
+                <span>{stop.name}</span>
+              </li>
+            ))}
+          </motion.ul>
+        )}
+      </AnimatePresence>
     </motion.div>
   )
 }
@@ -173,7 +197,17 @@ export default function App() {
   const [manualQuery, setManualQuery] = useState('')
   const [toasts, setToasts] = useState<Toast[]>([])
   const [lastUpdated, setLastUpdated] = useState<number | null>(null)
+  const [expandedStops, setExpandedStops] = useState<Set<string>>(new Set())
   const now = useNowTick(15_000)
+
+  const toggleStops = useCallback((id: string) => {
+    setExpandedStops(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }, [])
 
   useEffect(() => {
     if (getStoredConsent() === 'granted') loadAnalytics()
@@ -419,7 +453,13 @@ export default function App() {
                     <motion.div layout className="departure-grid">
                       <AnimatePresence mode="popLayout">
                         {items.map(dep => (
-                          <DepartureCard key={dep.id} dep={dep} now={now} />
+                          <DepartureCard
+                            key={dep.id}
+                            dep={dep}
+                            now={now}
+                            expanded={expandedStops.has(dep.id)}
+                            onToggleStops={() => toggleStops(dep.id)}
+                          />
                         ))}
                       </AnimatePresence>
                     </motion.div>
