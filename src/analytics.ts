@@ -23,8 +23,8 @@ export function loadAnalytics() {
   document.head.appendChild(script)
 
   window.dataLayer = window.dataLayer || []
-  function gtag(...args: unknown[]) {
-    window.dataLayer.push(args)
+  function gtag(..._args: unknown[]) {
+    window.dataLayer.push(arguments)
   }
   gtag('js', new Date())
   gtag('config', GA_MEASUREMENT_ID)
