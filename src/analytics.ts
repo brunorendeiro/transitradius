@@ -1,4 +1,4 @@
-const GA_MEASUREMENT_ID = 'G-8PWRSD62T'
+const GA_MEASUREMENT_ID = 'G-8PWRSDS62T'
 const CONSENT_KEY = 'transitradius-analytics-consent'
 
 declare global {
