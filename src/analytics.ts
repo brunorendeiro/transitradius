@@ -4,6 +4,7 @@ const CONSENT_KEY = 'transitradius-analytics-consent'
 declare global {
   interface Window {
     dataLayer: unknown[]
+    adsbygoogle: unknown[]
   }
 }
 
@@ -30,7 +31,23 @@ export function loadAnalytics() {
   gtag('config', GA_MEASUREMENT_ID)
 }
 
+export function loadAds() {
+  if (document.getElementById('adsbygoogle-script')) return
+  const script = document.createElement('script')
+  script.id = 'adsbygoogle-script'
+  script.async = true
+  script.crossOrigin = 'anonymous'
+  script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4561414438757131`
+  document.head.appendChild(script)
+
+  window.adsbygoogle = window.adsbygoogle || []
+  window.adsbygoogle.push({ google_ad_client: 'ca-pub-4561414438757131', enable_page_level_ads: true })
+}
+
 export function setConsent(value: Consent) {
   window.localStorage.setItem(CONSENT_KEY, value)
-  if (value === 'granted') loadAnalytics()
+  if (value === 'granted') {
+    loadAnalytics()
+    loadAds()
+  }
 }

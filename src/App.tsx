@@ -4,7 +4,7 @@ import { loadDepartures, type Origin } from './lib/departures'
 import { searchStationsByName, type Departure, type TransportType } from './lib/transportApi'
 import { formatDistance, walkMinutes } from './lib/geo'
 import { formatClock, formatCountdown, minutesUntil } from './lib/time'
-import { getStoredConsent, loadAnalytics } from './analytics'
+import { getStoredConsent, loadAnalytics, loadAds } from './analytics'
 import CookieConsent from './CookieConsent'
 
 type LocationStatus = 'idle' | 'requesting' | 'granted' | 'denied' | 'unavailable'
@@ -210,7 +210,10 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    if (getStoredConsent() === 'granted') loadAnalytics()
+    if (getStoredConsent() === 'granted') {
+      loadAnalytics()
+      loadAds()
+    }
   }, [])
   const toastId = useRef(0)
 

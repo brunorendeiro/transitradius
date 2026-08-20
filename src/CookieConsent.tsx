@@ -17,7 +17,7 @@ export default function CookieConsent() {
 
   return (
     <div className="cookie-consent" role="dialog" aria-live="polite" aria-label="Cookies">
-      <p>Uso o Google Analytics para perceber quantas pessoas visitam este projeto. Aceitas cookies analíticos?</p>
+      <p>Uso o Google Analytics e o Google AdSense para perceber visitas e mostrar anúncios. Aceitas cookies de análise e publicidade?</p>
       <div className="cookie-actions">
         <button className="cookie-reject" onClick={() => decide('denied')}>Recusar</button>
         <button className="cookie-accept" onClick={() => decide('granted')}>Aceitar</button>
