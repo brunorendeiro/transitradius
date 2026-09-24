@@ -40,8 +40,13 @@ export function loadAds() {
   script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4561414438757131`
   document.head.appendChild(script)
 
+  // Auto ads (enable_page_level_ads) ficam desligados: o posicionamento automático
+  // da Google acabava por colocar anúncios no ecrã de mapa/pesquisa, que tem pouco
+  // ou nenhum conteúdo do publicador, o que violou as políticas do AdSense.
+  // Preferimos unidades de anúncio manuais (ver AdSlot.tsx), colocadas apenas onde
+  // há conteúdo real (ex. lista de partidas encontradas).
   window.adsbygoogle = window.adsbygoogle || []
-  window.adsbygoogle.push({ google_ad_client: 'ca-pub-4561414438757131', enable_page_level_ads: true })
+  window.adsbygoogle.push({ google_ad_client: 'ca-pub-4561414438757131' })
 }
 
 export function setConsent(value: Consent) {

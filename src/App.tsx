@@ -6,6 +6,7 @@ import { formatDistance, walkMinutes } from './lib/geo'
 import { formatClock, formatCountdown, minutesUntil } from './lib/time'
 import { getStoredConsent, loadAnalytics, loadAds } from './analytics'
 import CookieConsent from './CookieConsent'
+import AdSlot from './AdSlot'
 
 type LocationStatus = 'idle' | 'requesting' | 'granted' | 'denied' | 'unavailable'
 type DataStatus = 'idle' | 'loading' | 'ready' | 'error'
@@ -470,6 +471,8 @@ export default function App() {
                 ))}
               </div>
             )}
+
+            {dataStatus === 'ready' && departures.length > 0 && <AdSlot />}
           </>
         )}
       </main>
